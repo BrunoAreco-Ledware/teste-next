@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+
+
+:root {
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --color-border: #cccccc;
+  --stats-track: rgba(0,0,0,0.06);
+  --stats-grad-start: #7c5cff;
+  --stats-grad-mid: #6a67ff;
+  --stats-grad-end: #00d4ff;
+  --stats-meta: rgba(0,0,0,0.6);
+  --stats-divider: rgba(0,0,0,0.06);
+  --stats-accent-active: #2ecc71;
+  --stats-accent-inactive: #e74c3c;
+  --stats-title: #111827;
+  --stats-value: #111827;
+  --card-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  --color-card: #f5f7fa;
+  --card-background: var(--color-card);
+  --card-border: rgba(0,0,0,0.08);
+}
+
+.dark {
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+  --color-border: #bdb9b9;
+  --stats-track: rgba(255,255,255,0.06);
+  --stats-grad-start: #7c5cff;
+  --stats-grad-mid: #6a67ff;
+  --stats-grad-end: #00d4ff;
+  --stats-meta: rgba(255,255,255,0.6);
+  --stats-divider: rgba(255,255,255,0.04);
+  --stats-accent-active: #2ecc71;
+  --stats-accent-inactive: #e74c3c;
+  --stats-title: #e6eef8;
+  --stats-value: #ffffff;
+  --card-shadow: 0 10px 30px rgba(2,6,23,0.28);
+  --color-card: #101216;
+  --card-background: var(--color-card);
+  --card-border: rgba(255,255,255,0.06);
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: var(--background-dark);
+    --foreground: var(--foreground-dark);
+  }
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ícones de tema no TopNav: por padrão mostra o sol; quando .dark estiver presente mostra a lua */
+.icon { display: inline-flex; align-items: center; }
+.icon-sun { display: none; }
+.icon-moon { display: inline; }
+.dark .icon-sun { display: inline; }
+.dark .icon-moon { display: none; }
+
+/* estilo do botão de alternância de tema */
+.theme-toggle {
+  border: 1px solid var(--color-border);
+  border-radius: 9999px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.theme-toggle:hover {
+  background: rgba(0,0,0,0.04);
+}
+.dark .theme-toggle:hover {
+  background: rgba(255,255,255,0.03);
+}
+.theme-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+}
+
+/* Sidebar item styles: hover animation suave e profissional */
+.sidebar-list { padding: 24px; width: 100%; }
+.sidebar-item {
+  display: block; /* li should behave as a full-width block */
+  width: 100%;
+  box-sizing: border-box;
+}
+.sidebar-item > .sidebar-item-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  cursor: pointer;
+}
+
+/* centralizar ícones quando minimizado */
+.sidebar.minimized .sidebar-item > .sidebar-item-inner { justify-content: center; }
+.sidebar.minimized .sidebar-item > .sidebar-item-inner .sidebar-label { display: none; }
+
+/* garantir que o container sidebar permita largura total dos itens */
+.sidebar { align-items: stretch; }
+.sidebar-item:hover > .sidebar-item-inner {
+  background: rgba(0,0,0,0.04);
+  transform: translateX(6px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+.dark .sidebar-item:hover {
+  background: rgba(255,255,255,0.03);
+}
+.sidebar-icon {
+  width: 28px; /* largura fixa para manter posição */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sidebar-label {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 240px;
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 200ms ease, transform 200ms ease, max-width 200ms ease;
+}
+/* esconder com animação quando minimizado e revelar da esquerda para a direita ao expandir */
+.sidebar.minimized .sidebar-label {
+  opacity: 0;
+  transform: translateX(-8px);
+  max-width: 0;
+}
+
+/* quando minimizado, manter ícones na mesma posição (padding left fixa no .sidebar-list) */
+.sidebar.minimized .sidebar-list { padding-left: 24px; }
+
+/* Quando minimizado: centralizar ícones e estabilizar hover */
+.sidebar.minimized .sidebar-list { padding-left: 0; }
+.sidebar.minimized .sidebar-item { justify-content: center; }
+.sidebar.minimized .sidebar-item .sidebar-label { display: none; }
+/* hover suave quando minimizado: sem deslocamento lateral, com elevação e scale do ícone */
+.sidebar.minimized .sidebar-item:hover {
+  transform: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.06);
+  border-radius: 8px;
+}
+.dark .sidebar.minimized .sidebar-item:hover {
+  background: rgba(255,255,255,0.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+.sidebar-item .sidebar-icon { transition: transform 160ms ease; }
+.sidebar.minimized .sidebar-item:hover .sidebar-icon { transform: scale(1.12); }
+
