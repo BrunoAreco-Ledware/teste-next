@@ -162,7 +162,7 @@ body {
 
 /* Sidebar item styles: hover animation suave e profissional */
 .sidebar-list {
-  padding: 24px 12px;
+  padding: 24px 0;
   width: 100%;
   transition: padding 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -178,9 +178,22 @@ body {
   gap: 12px;
   min-height: 40px;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 0;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
   transition: background-color 220ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, gap 260ms ease, padding 260ms ease;
   cursor: pointer;
+}
+
+.sidebar-item.active .sidebar-item-inner,
+.sidebar-item:focus-within .sidebar-item-inner {
+  background: rgba(0,0,0,0.08);
+}
+
+.dark .sidebar-item.active .sidebar-item-inner,
+.dark .sidebar-item:focus-within .sidebar-item-inner {
+  background: rgba(255,255,255,0.08);
 }
 
 /* centralizar ícones quando minimizado */
@@ -259,7 +272,7 @@ body {
 }
 
 /* Quando minimizado: centralizar ícones e estabilizar hover */
-.sidebar.minimized .sidebar-list { padding: 24px 8px; }
+.sidebar.minimized .sidebar-list { padding: 24px 0; }
 /* hover suave quando minimizado: sem deslocamento lateral, com elevação e scale do ícone */
 .sidebar.minimized .sidebar-item:hover .sidebar-item-inner {
   transform: scale(1.04);

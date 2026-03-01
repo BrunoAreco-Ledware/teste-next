@@ -3,6 +3,8 @@ import { useTheme } from "./ThemeProvider";
 import HamburgerButton from "./HamburgerButton";
 import { MdHome, MdPerson, MdSettings } from 'react-icons/md';
 import Tooltip from "./Tooltip";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const SIDEBAR_MINIMIZED_KEY = 'sidebar:minimized';
 
@@ -13,11 +15,12 @@ interface SidebarProps {
 export default function Sidebar({ initialMinimized = false }: SidebarProps) {
   const { dark } = useTheme();
   const [minimized, setMinimized] = useState(initialMinimized);
+  const pathname = usePathname();
 
   const menuItems = [
-    { Icon: MdHome, label: 'Sidebar Item 1' },
-    { Icon: MdPerson, label: 'Sidebar Item 2' },
-    { Icon: MdSettings, label: 'Sidebar Item 3' },
+    { Icon: MdHome, label: 'Dashboard', href: '/' },
+    { Icon: MdPerson, label: 'Clientes', href: '/clientes' },
+    { Icon: MdSettings, label: 'Configurações', href: '/configuracoes' },
   ];
 
   useEffect(() => {
@@ -52,13 +55,17 @@ export default function Sidebar({ initialMinimized = false }: SidebarProps) {
           <span style={{ fontWeight: 'bold', fontSize: 20 }}>Logo</span>
         </div>
         <ul className="sidebar-list" style={{ listStyle: 'none', padding: 0, marginTop: 24, flex: 1, width: '100%' }}>
-          {menuItems.map(({ Icon, label }, index) => (
-            <li key={label} className="sidebar-item" style={{ ['--item-index' as any]: index }}>
+          {menuItems.map(({ Icon, label, href }, index) => (
+            <li
+              key={label}
+              className={"sidebar-item" + (pathname === href ? " active" : "")}
+              style={{ ['--item-index' as any]: index }}
+            >
               <Tooltip content={label} show={minimized}>
-                <div className="sidebar-item-inner">
+                <Link href={href} className="sidebar-item-inner">
                   <span className="sidebar-icon" aria-hidden><Icon size={20} /></span>
                   <span className="sidebar-label">{label}</span>
-                </div>
+                </Link>
               </Tooltip>
             </li>
           ))}
