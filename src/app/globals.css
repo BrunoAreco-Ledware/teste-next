@@ -57,6 +57,21 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+:root {
+  --mobile-sidebar-width: 54px;
+}
+
+@media (max-width: 768px) {
+  .theme-shell {
+    width: calc(100vw - var(--mobile-sidebar-width));
+    margin-left: var(--mobile-sidebar-width);
+    overflow-x: hidden;
+  }
+  .theme-main {
+    width: 100%;
+  }
+}
+
 /* ícones de tema no TopNav: por padrão mostra o sol; quando .dark estiver presente mostra a lua */
 .icon { display: inline-flex; align-items: center; }
 .icon-sun { display: none; }
@@ -88,8 +103,49 @@ body {
   box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
 
+.hamburger-button:hover {
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12) !important;
+}
+.dark .hamburger-button:hover {
+  box-shadow: 0 8px 18px rgba(0,0,0,0.28) !important;
+}
+
+.hamburger-icon {
+  width: 16px;
+  height: 12px;
+  position: relative;
+  display: inline-block;
+}
+.hamburger-line {
+  position: absolute;
+  left: 0;
+  width: 16px;
+  height: 2px;
+  border-radius: 9999px;
+  background: currentColor;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+  transform-origin: center;
+}
+.hamburger-line.line-1 { top: 0; }
+.hamburger-line.line-2 { top: 5px; }
+.hamburger-line.line-3 { top: 10px; }
+
+.hamburger-button.is-open .hamburger-line.line-1 {
+  transform: translateY(5px) rotate(45deg);
+}
+.hamburger-button.is-open .hamburger-line.line-2 {
+  opacity: 0;
+}
+.hamburger-button.is-open .hamburger-line.line-3 {
+  transform: translateY(-5px) rotate(-45deg);
+}
+
 /* Sidebar item styles: hover animation suave e profissional */
-.sidebar-list { padding: 24px; width: 100%; }
+.sidebar-list {
+  padding: 24px 12px;
+  width: 100%;
+  transition: padding 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 .sidebar-item {
   display: block; /* li should behave as a full-width block */
   width: 100%;
@@ -101,22 +157,48 @@ body {
   gap: 12px;
   padding: 8px 12px;
   border-radius: 8px;
-  transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  transition: background-color 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease, gap 240ms ease, padding 240ms ease;
   cursor: pointer;
 }
 
 /* centralizar ícones quando minimizado */
-.sidebar.minimized .sidebar-item > .sidebar-item-inner { justify-content: center; }
-.sidebar.minimized .sidebar-item > .sidebar-item-inner .sidebar-label { display: none; }
+.sidebar.minimized .sidebar-item > .sidebar-item-inner {
+  justify-content: center;
+  gap: 0;
+  padding: 8px 10px;
+}
 
-/* garantir que o container sidebar permita largura total dos itens */
-.sidebar { align-items: stretch; }
-.sidebar-item:hover > .sidebar-item-inner {
+/* garantir que o container sidebar permita largura total dos itens e largura fixa */
+.sidebar {
+  align-items: stretch;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  position: relative;
+  transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1), min-width 280ms cubic-bezier(0.22, 1, 0.36, 1), max-width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sidebar.minimized {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 1200;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.12);
+  }
+}
+
+.sidebar:not(.minimized) .sidebar-item:hover > .sidebar-item-inner {
   background: rgba(0,0,0,0.04);
-  transform: translateX(6px);
+  transform: translateX(4px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
-.dark .sidebar-item:hover {
+.dark .sidebar:not(.minimized) .sidebar-item:hover > .sidebar-item-inner {
   background: rgba(255,255,255,0.03);
 }
 .sidebar-icon {
@@ -133,30 +215,28 @@ body {
   max-width: 240px;
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 200ms ease, transform 200ms ease, max-width 200ms ease;
+  transition: opacity 220ms ease, transform 220ms ease, max-width 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sidebar:not(.minimized) .sidebar-label {
+  transition-delay: 40ms;
 }
 /* esconder com animação quando minimizado e revelar da esquerda para a direita ao expandir */
 .sidebar.minimized .sidebar-label {
   opacity: 0;
-  transform: translateX(-8px);
+  transform: translateX(-10px);
   max-width: 0;
+  transition-delay: 0ms;
 }
-
-/* quando minimizado, manter ícones na mesma posição (padding left fixa no .sidebar-list) */
-.sidebar.minimized .sidebar-list { padding-left: 24px; }
 
 /* Quando minimizado: centralizar ícones e estabilizar hover */
-.sidebar.minimized .sidebar-list { padding-left: 0; }
-.sidebar.minimized .sidebar-item { justify-content: center; }
-.sidebar.minimized .sidebar-item .sidebar-label { display: none; }
+.sidebar.minimized .sidebar-list { padding: 24px 8px; }
 /* hover suave quando minimizado: sem deslocamento lateral, com elevação e scale do ícone */
-.sidebar.minimized .sidebar-item:hover {
-  transform: none;
+.sidebar.minimized .sidebar-item:hover > .sidebar-item-inner {
+  transform: scale(1.03);
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   background: rgba(0,0,0,0.06);
-  border-radius: 8px;
 }
-.dark .sidebar.minimized .sidebar-item:hover {
+.dark .sidebar.minimized .sidebar-item:hover > .sidebar-item-inner {
   background: rgba(255,255,255,0.03);
   box-shadow: 0 8px 20px rgba(0,0,0,0.04);
 }

@@ -23,10 +23,12 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // read cookie (prefer server API, fallback to document.cookie if running in browser)
   let theme: string | undefined;
+  let sidebarMinimized: string | undefined;
   try {
     const cookieStore = await cookies();
     if (cookieStore && typeof (cookieStore as any).get === 'function') {
       theme = (cookieStore as any).get('theme')?.value;
+      sidebarMinimized = (cookieStore as any).get('sidebar_minimized')?.value;
     }
   } catch (e) {
     // ignore
@@ -39,6 +41,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       if (cookieHeader) {
         const m = cookieHeader.match(/(?:^|; )theme=([^;]+)/);
         theme = m ? decodeURIComponent(m[1]) : undefined;
+        const sm = cookieHeader.match(/(?:^|; )sidebar_minimized=([^;]+)/);
+        sidebarMinimized = sm ? decodeURIComponent(sm[1]) : undefined;
       }
     } catch (e) {}
   }
@@ -100,7 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </Script>
       </head>
       <body className="antialiased">
-        <ThemeLayout>{children}</ThemeLayout>
+        <ThemeLayout initialSidebarMinimized={sidebarMinimized === 'true'}>{children}</ThemeLayout>
       </body>
     </html>
   );

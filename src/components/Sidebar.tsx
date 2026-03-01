@@ -1,29 +1,43 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
 import HamburgerButton from "./HamburgerButton";
 import { MdHome, MdPerson, MdSettings } from 'react-icons/md';
 
-export default function Sidebar() {
+const SIDEBAR_MINIMIZED_KEY = 'sidebar:minimized';
+
+interface SidebarProps {
+  initialMinimized?: boolean;
+}
+
+export default function Sidebar({ initialMinimized = false }: SidebarProps) {
   const { dark } = useTheme();
-  const [minimized, setMinimized] = useState(false);
+  const [minimized, setMinimized] = useState(initialMinimized);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(SIDEBAR_MINIMIZED_KEY, String(minimized));
+    } catch {}
+    try {
+      document.cookie = `sidebar_minimized=${minimized}; path=/; max-age=31536000; samesite=lax`;
+    } catch {}
+  }, [minimized]);
+
   return (
     <>
-      <HamburgerButton minimized={minimized} onClick={() => setMinimized((m) => !m)} dark={dark} />
+      <HamburgerButton minimized={minimized} onClick={() => setMinimized((m) => !m)} />
       <aside
         className={"sidebar" + (minimized ? ' minimized' : '')}
         style={{
-          width: minimized ? 64 : 220,
           height: '100vh',
           background: 'var(--color-background)',
           color: 'var(--color-foreground)',
           display: 'flex',
           flexDirection: 'column',
-          transition: 'width 0.2s, background 0.2s, color 0.2s',
+          transition: 'width 280ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease, color 200ms ease',
           alignItems: 'stretch',
           overflow: 'hidden',
           borderRight: '1px solid var(--color-border)',
-          position: 'relative',
-          zIndex: 1100,
+          zIndex: 1200,
         }}
       >
         <div style={{ position: 'relative', width: '100%', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid var(--color-border)' }}>
