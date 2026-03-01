@@ -9,17 +9,17 @@ export default function TopNav() {
       style={{
         width: '100%',
         height: '60px',
-        background: 'var(--color-background)',
-        color: 'var(--color-foreground)',
+        background: 'linear-gradient(90deg, var(--stats-grad-start), var(--stats-grad-mid), var(--stats-grad-end))',
+        color: 'var(--stats-value)',
         borderBottom: '1px solid var(--color-border)',
         display: 'flex',
         alignItems: 'center',
         padding: '0 56px 0 32px',
-        justifyContent: 'space-between',
-        transition: 'background 0.2s, color 0.2s'
+        justifyContent: 'flex-end',
+        boxShadow: 'var(--card-shadow)',
+        transition: 'background 0.2s, color 0.2s, box-shadow 0.2s'
       }}
     >
-        <span style={{ fontWeight: 'bold', fontSize: 20 }}>TopNav</span>
       <button
         className="theme-toggle"
         onClick={() => setDark(!dark)}
