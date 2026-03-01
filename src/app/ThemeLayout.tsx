@@ -34,9 +34,9 @@ function ThemeContent({ children, initialSidebarMinimized }: { children: React.R
       }}
     >
         <Sidebar initialMinimized={initialSidebarMinimized} />
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: '100vh', minWidth: 0 }}>
           <TopNav />
-          <main className="theme-main" style={{ flex: 1, padding: 24, minHeight: 0, width: '100%' }}>
+          <main className="theme-main" style={{ flex: 1, padding: 0, minHeight: 0, minWidth: 0 }}>
             {children}
           </main>
         </div>

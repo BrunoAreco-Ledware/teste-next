@@ -19,7 +19,7 @@
   --card-shadow: 0 6px 18px rgba(2,6,23,0.06);
   --color-card: #f5f7fa;
   --card-background: var(--color-card);
-  --card-border: rgba(0,0,0,0.08);
+  --card-border: rgba(0, 0, 0, 1);
 }
 
 .dark {
@@ -39,7 +39,7 @@
   --card-shadow: 0 10px 30px rgba(2,6,23,0.28);
   --color-card: #101216;
   --card-background: var(--color-card);
-  --card-border: rgba(255,255,255,0.06);
+  --card-border: rgb(255, 255, 255);
 }
 
 
@@ -55,20 +55,40 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
 }
 
 :root {
-  --mobile-sidebar-width: 54px;
+  --mobile-sidebar-width: 64px;
+}
+
+.page-cards {
+  justify-content: flex-start;
 }
 
 @media (max-width: 768px) {
   .theme-shell {
-    width: calc(100vw - var(--mobile-sidebar-width));
+    width: calc(100% - var(--mobile-sidebar-width));
     margin-left: var(--mobile-sidebar-width);
     overflow-x: hidden;
   }
   .theme-main {
     width: 100%;
+  }
+  .page-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .page-content > h1 {
+    align-self: flex-start;
+    width: 100%;
+    text-align: left;
+  }
+  .page-cards {
+    width: 100%;
+    justify-content: center;
   }
 }
 
@@ -144,25 +164,27 @@ body {
 .sidebar-list {
   padding: 24px 12px;
   width: 100%;
-  transition: padding 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: padding 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sidebar-item {
   display: block; /* li should behave as a full-width block */
   width: 100%;
   box-sizing: border-box;
+  --item-index: 0;
 }
-.sidebar-item > .sidebar-item-inner {
+.sidebar-item .sidebar-item-inner {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 40px;
   padding: 8px 12px;
   border-radius: 8px;
-  transition: background-color 200ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 200ms ease, gap 240ms ease, padding 240ms ease;
+  transition: background-color 220ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 220ms ease, gap 260ms ease, padding 260ms ease;
   cursor: pointer;
 }
 
 /* centralizar ícones quando minimizado */
-.sidebar.minimized .sidebar-item > .sidebar-item-inner {
+.sidebar.minimized .sidebar-item .sidebar-item-inner {
   justify-content: center;
   gap: 0;
   padding: 8px 10px;
@@ -175,7 +197,7 @@ body {
   min-width: 220px;
   max-width: 220px;
   position: relative;
-  transition: width 280ms cubic-bezier(0.22, 1, 0.36, 1), min-width 280ms cubic-bezier(0.22, 1, 0.36, 1), max-width 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: width 380ms cubic-bezier(0.22, 1, 0.36, 1), min-width 380ms cubic-bezier(0.22, 1, 0.36, 1), max-width 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sidebar.minimized {
   width: 64px;
@@ -193,12 +215,12 @@ body {
   }
 }
 
-.sidebar:not(.minimized) .sidebar-item:hover > .sidebar-item-inner {
+.sidebar:not(.minimized) .sidebar-item:hover .sidebar-item-inner {
   background: rgba(0,0,0,0.04);
   transform: translateX(4px);
   box-shadow: 0 4px 10px rgba(0,0,0,0.06);
 }
-.dark .sidebar:not(.minimized) .sidebar-item:hover > .sidebar-item-inner {
+.dark .sidebar:not(.minimized) .sidebar-item:hover .sidebar-item-inner {
   background: rgba(255,255,255,0.03);
 }
 .sidebar-icon {
@@ -207,18 +229,26 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sidebar-label {
   display: inline-block;
+  line-height: 1.2;
+  text-align: left;
   white-space: nowrap;
   overflow: hidden;
   max-width: 240px;
   opacity: 1;
   transform: translateX(0);
-  transition: opacity 220ms ease, transform 220ms ease, max-width 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 260ms ease, transform 260ms ease, max-width 340ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .sidebar:not(.minimized) .sidebar-label {
-  transition-delay: 40ms;
+  transition-delay: 60ms;
+}
+
+.sidebar:not(.minimized) .sidebar-item .sidebar-item-inner {
+  animation: sidebar-item-reveal 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc((var(--item-index) * 45ms) + 40ms);
 }
 /* esconder com animação quando minimizado e revelar da esquerda para a direita ao expandir */
 .sidebar.minimized .sidebar-label {
@@ -231,15 +261,73 @@ body {
 /* Quando minimizado: centralizar ícones e estabilizar hover */
 .sidebar.minimized .sidebar-list { padding: 24px 8px; }
 /* hover suave quando minimizado: sem deslocamento lateral, com elevação e scale do ícone */
-.sidebar.minimized .sidebar-item:hover > .sidebar-item-inner {
-  transform: scale(1.03);
+.sidebar.minimized .sidebar-item:hover .sidebar-item-inner {
+  transform: scale(1.04);
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   background: rgba(0,0,0,0.06);
 }
-.dark .sidebar.minimized .sidebar-item:hover > .sidebar-item-inner {
+.dark .sidebar.minimized .sidebar-item:hover .sidebar-item-inner {
   background: rgba(255,255,255,0.03);
   box-shadow: 0 8px 20px rgba(0,0,0,0.04);
 }
-.sidebar-item .sidebar-icon { transition: transform 160ms ease; }
 .sidebar.minimized .sidebar-item:hover .sidebar-icon { transform: scale(1.12); }
+
+.app-tooltip-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.app-tooltip {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 8px);
+  transform: translateY(-50%) translateX(-4px);
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-foreground);
+  background: var(--card-background);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  z-index: 2200;
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.app-tooltip::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid var(--card-border);
+}
+
+.app-tooltip.is-hidden {
+  display: none;
+}
+
+.app-tooltip-wrapper:hover .app-tooltip.show-on-hover,
+.app-tooltip-wrapper:focus-within .app-tooltip.show-on-hover {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+@keyframes sidebar-item-reveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 

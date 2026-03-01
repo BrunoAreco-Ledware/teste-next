@@ -24,6 +24,8 @@ export default function StatsCard({ icon: Icon, title, height, width, value, met
 
     const numValue = parseNumber(value);
     const numMeta = parseNumber(meta as any);
+    const hasMeta = meta !== undefined && meta !== null && !(typeof meta === 'string' && meta.trim() === '');
+    const hasStatus = typeof activeCount !== 'undefined' || typeof inactiveCount !== 'undefined';
     const percent = numValue !== undefined && numMeta !== undefined && numMeta > 0 ? Math.min(100, Math.max(0, (numValue / numMeta) * 100)) : 0;
 
     const radius = 60;
@@ -69,65 +71,93 @@ export default function StatsCard({ icon: Icon, title, height, width, value, met
             borderRadius: 12,
             background: 'var(--card-background)',
             color: 'var(--card-foreground)',
-            border: '1px solid var(--card-border)',
+            border: '0.5px solid var(--color-border)',
             boxShadow: 'var(--card-shadow)',
             minWidth: 100,
             height: height,
             width: width,
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            display: 'flex',
+            flexDirection: 'column'
         }}>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: 8 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    {Icon ? <Icon size={16} /> : null}
+                    {Icon ? (
+                        <span
+                            style={{
+                                width: 30,
+                                height: 30,
+                                borderRadius: '50%',
+                                border: '2px solid var(--card-border)',
+                                background: 'var(--card-background)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                            aria-hidden
+                        >
+                            <Icon size={16} />
+                        </span>
+                    ) : null}
                     <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--stats-title)' }}>{title}</div>
                 </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div style={{ position: 'relative', width: radius * 2, height: radius * 2 }}>
-                    <svg height={radius * 2} width={radius * 2} style={{ transform: 'rotate(-90deg)' }}>
-                        <defs>
-                            <linearGradient id="stats-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="var(--stats-grad-start)" />
-                                <stop offset="50%" stopColor="var(--stats-grad-mid)" />
-                                <stop offset="100%" stopColor="var(--stats-grad-end)" />
-                            </linearGradient>
-                        </defs>
-                        <circle
-                            stroke="var(--stats-track)"
-                            fill="transparent"
-                            strokeWidth={stroke}
-                            r={normalizedRadius}
-                            cx={radius}
-                            cy={radius}
-                        />
-                        <circle
-                            stroke="url(#stats-grad)"
-                            fill="transparent"
-                            strokeWidth={stroke}
-                            strokeLinecap="round"
-                            strokeDasharray={`${circumference} ${circumference}`}
-                            style={{ strokeDashoffset: offset, transition: 'stroke-dashoffset 800ms ease' }}
-                            r={normalizedRadius}
-                            cx={radius}
-                            cy={radius}
-                        />
-                    </svg>
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
-                        <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--stats-value)', lineHeight: 1 }}>
-                            {displayValue !== null ? displayValue.toLocaleString() : (typeof numValue === 'number' ? numValue.toLocaleString() : String(value))}
+            <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                    {hasMeta ? (
+                        <div style={{ position: 'relative', width: radius * 2, height: radius * 2 }}>
+                            <svg height={radius * 2} width={radius * 2} style={{ transform: 'rotate(-90deg)' }}>
+                                <defs>
+                                    <linearGradient id="stats-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stopColor="var(--stats-grad-start)" />
+                                        <stop offset="50%" stopColor="var(--stats-grad-mid)" />
+                                        <stop offset="100%" stopColor="var(--stats-grad-end)" />
+                                    </linearGradient>
+                                </defs>
+                                <circle
+                                    stroke="var(--stats-track)"
+                                    fill="transparent"
+                                    strokeWidth={stroke}
+                                    r={normalizedRadius}
+                                    cx={radius}
+                                    cy={radius}
+                                />
+                                <circle
+                                    stroke="url(#stats-grad)"
+                                    fill="transparent"
+                                    strokeWidth={stroke}
+                                    strokeLinecap="round"
+                                    strokeDasharray={`${circumference} ${circumference}`}
+                                    style={{ strokeDashoffset: offset, transition: 'stroke-dashoffset 800ms ease' }}
+                                    r={normalizedRadius}
+                                    cx={radius}
+                                    cy={radius}
+                                />
+                            </svg>
+                            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                                <div style={{ fontSize: 24, fontWeight: 800, color: 'var(--stats-value)', lineHeight: 1 }}>
+                                    {displayValue !== null ? displayValue.toLocaleString() : (typeof numValue === 'number' ? numValue.toLocaleString() : String(value))}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div style={{ minHeight: radius * 2, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--stats-value)', lineHeight: 1 }}>
+                                {displayValue !== null ? displayValue.toLocaleString() : (typeof numValue === 'number' ? numValue.toLocaleString() : String(value))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div style={{ textAlign: 'center', marginTop: 8, minHeight: 20 }}>
+                    {hasMeta && numMeta !== undefined ? <div style={{ fontSize: 13, color: 'var(--stats-meta)' }}>Meta: {numMeta.toLocaleString()} ({Math.round(percent)}%)</div> : (hasMeta ? <div style={{ fontSize: 13, color: 'var(--stats-meta)' }}>{meta}</div> : null)}
                 </div>
             </div>
 
-            <div style={{ textAlign: 'center', marginTop: 8 }}>
-                {numMeta !== undefined ? <div style={{ fontSize: 13, color: 'var(--stats-meta)' }}>Meta: {numMeta.toLocaleString()} ({Math.round(percent)}%)</div> : (meta ? <div style={{ fontSize: 13, color: 'var(--stats-meta)' }}>{meta}</div> : null)}
-            </div>
+            <div style={{ height: 1, background: 'var(--stats-divider)', margin: '12px 0', borderRadius: 1, marginTop: 'auto' }} />
 
-            <div style={{ height: 1, background: 'var(--stats-divider)', margin: '12px 0', borderRadius: 1 }} />
-
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 24, alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 24, alignItems: 'center', minHeight: 22 }}>
                 {typeof activeCount !== 'undefined' && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <div style={{ fontSize: 13, color: 'var(--card-foreground)', fontWeight: 600 }}>Ativo:</div>
@@ -142,6 +172,7 @@ export default function StatsCard({ icon: Icon, title, height, width, value, met
                         <div style={{ fontSize: 13, color: 'var(--card-foreground)' }}>{inactiveCount}</div>
                     </div>
                 )}
+                {!hasStatus && <div aria-hidden style={{ height: 1 }} />}
             </div>
         </div>
     );

@@ -6,7 +6,7 @@ interface HamburgerButtonProps {
 }
 
 export default function HamburgerButton({ minimized, onClick }: HamburgerButtonProps) {
-  const collapsedLeft = 46;
+  const collapsedLeft = 46.5;
   const expandedOffset = 156;
 
   return (

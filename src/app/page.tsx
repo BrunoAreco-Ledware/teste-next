@@ -1,16 +1,22 @@
 "use client";
-import { useTheme } from "../components/ThemeProvider";
 import StatsCard from "../components/StatsCard";
-import { MdBarChart, MdTrendingUp } from 'react-icons/md';
+import { MdPeople, MdTrendingUp } from 'react-icons/md';
 
 export default function Home() {
-  const { dark } = useTheme();
   return (
-    <div style={{ width: '100%', minHeight: '100vh', background: 'var(--color-background)', color: 'var(--color-foreground)', padding: 24 }}>
+    <div className="page-content" style={{ width: '100%', minHeight: '100vh', background: 'var(--color-background)', color: 'var(--color-foreground)', padding: '24px', boxSizing: 'border-box' }}>
       <h1 style={{ margin: 0, marginBottom: 16 }}>Dashboard</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+      <div
+        className="page-cards"
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 16,
+          width: '100%'
+        }}
+      >
         <StatsCard
-          icon={MdBarChart}
+          icon={MdPeople}
           title="Total de Clientes"
           height={260}
           width={260}

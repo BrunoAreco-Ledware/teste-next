@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "./ThemeProvider";
 import HamburgerButton from "./HamburgerButton";
 import { MdHome, MdPerson, MdSettings } from 'react-icons/md';
+import Tooltip from "./Tooltip";
 
 const SIDEBAR_MINIMIZED_KEY = 'sidebar:minimized';
 
@@ -12,6 +13,12 @@ interface SidebarProps {
 export default function Sidebar({ initialMinimized = false }: SidebarProps) {
   const { dark } = useTheme();
   const [minimized, setMinimized] = useState(initialMinimized);
+
+  const menuItems = [
+    { Icon: MdHome, label: 'Sidebar Item 1' },
+    { Icon: MdPerson, label: 'Sidebar Item 2' },
+    { Icon: MdSettings, label: 'Sidebar Item 3' },
+  ];
 
   useEffect(() => {
     try {
@@ -33,9 +40,9 @@ export default function Sidebar({ initialMinimized = false }: SidebarProps) {
           color: 'var(--color-foreground)',
           display: 'flex',
           flexDirection: 'column',
-          transition: 'width 280ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease, color 200ms ease',
+          transition: 'width 380ms cubic-bezier(0.22, 1, 0.36, 1), background-color 200ms ease, color 200ms ease',
           alignItems: 'stretch',
-          overflow: 'hidden',
+          overflow: minimized ? 'visible' : 'hidden',
           borderRight: '1px solid var(--color-border)',
           zIndex: 1200,
         }}
@@ -45,24 +52,16 @@ export default function Sidebar({ initialMinimized = false }: SidebarProps) {
           <span style={{ fontWeight: 'bold', fontSize: 20 }}>Logo</span>
         </div>
         <ul className="sidebar-list" style={{ listStyle: 'none', padding: 0, marginTop: 24, flex: 1, width: '100%' }}>
-          <li className="sidebar-item">
-            <div className="sidebar-item-inner">
-              <span className="sidebar-icon" aria-hidden><MdHome size={20} /></span>
-              <span className="sidebar-label">Sidebar Item 1</span>
-            </div>
-          </li>
-          <li className="sidebar-item">
-            <div className="sidebar-item-inner">
-              <span className="sidebar-icon" aria-hidden><MdPerson size={20} /></span>
-              <span className="sidebar-label">Sidebar Item 2</span>
-            </div>
-          </li>
-          <li className="sidebar-item">
-            <div className="sidebar-item-inner">
-              <span className="sidebar-icon" aria-hidden><MdSettings size={20} /></span>
-              <span className="sidebar-label">Sidebar Item 3</span>
-            </div>
-          </li>
+          {menuItems.map(({ Icon, label }, index) => (
+            <li key={label} className="sidebar-item" style={{ ['--item-index' as any]: index }}>
+              <Tooltip content={label} show={minimized}>
+                <div className="sidebar-item-inner">
+                  <span className="sidebar-icon" aria-hidden><Icon size={20} /></span>
+                  <span className="sidebar-label">{label}</span>
+                </div>
+              </Tooltip>
+            </li>
+          ))}
         </ul>
       </aside>
     </>
